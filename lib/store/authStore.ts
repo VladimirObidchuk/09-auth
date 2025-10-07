@@ -2,16 +2,19 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { UserLogin } from "@/types/user";
+import { LoginResponse } from "@/types/user";
+
+type UserState = LoginResponse & { isAuthenticated: boolean };
 
 type UserDraftStore = {
-  user: UserLogin & { isAuthenticated: boolean };
-  setUser: (user: UserLogin) => void;
+  user: UserState;
+  setUser: (user: LoginResponse) => void;
   clearIsAuthenticated: () => void;
 };
 const initialUser = {
-  email: "",
-  password: "",
+  user: { id: "", name: "", email: "", avatar: "" },
+  accessToken: "",
+  refreshToken: "",
   isAuthenticated: false,
 };
 

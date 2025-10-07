@@ -1,0 +1,40 @@
+"use client";
+
+import React from "react";
+import css from "./ProfilePage.module.css";
+import Image from "next/image";
+import Link from "next/link";
+import { useUserStore } from "@/lib/store/authStore";
+
+export default function ProfileClient() {
+  const { user } = useUserStore();
+
+  return (
+    <div className={css.profileCard}>
+      <div className={css.header}>
+        <h1 className={css.formTitle}>Profile Page</h1>
+        <Link href="/" className={css.editProfileButton}>
+          Edit Profile
+        </Link>
+      </div>
+
+      <div className={css.avatarWrapper}>
+        <Image
+          src={
+            user.user.avatar ||
+            "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+          }
+          alt="User Avatar"
+          width={120}
+          height={120}
+          className={css.avatar}
+        />
+      </div>
+
+      <div className={css.profileInfo}>
+        <p>Username: {user.user.name || "Anonymous"}</p>
+        <p>Email: {user.user.email}</p>
+      </div>
+    </div>
+  );
+}

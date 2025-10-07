@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import css from "./SignUpPage.module.css";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { UserLogin } from "@/types/user";
-import { register } from "@/lib/serverApi";
+import { register } from "@/lib/clientApi";
 import { ApiError } from "@/app/api/api";
 
 const SingUp = () => {

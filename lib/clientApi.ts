@@ -1,6 +1,28 @@
 import { NoteListResponse } from "@/types/note";
 import { nextServer } from "./api";
 
+import { LoginResponse, UserLogin } from "@/types/user";
+import { AxiosError } from "axios";
+
+export async function register(data: UserLogin): Promise<LoginResponse> {
+  try {
+    const res = await nextServer.post<LoginResponse>(
+      "/api/auth/register",
+      data
+    );
+    return res.data;
+  } catch (error) {
+    const err = error as AxiosError;
+    console.error("Login error:", err.response?.data || err.message);
+    throw error;
+  }
+}
+
+export async function login(data: UserLogin) {
+  const res = await nextServer.post<UserLogin>("/api/auth/login", data);
+  return res.data;
+}
+
 export const getNotes = async (categoryId?: string) => {
   const res = await nextServer.get<NoteListResponse>("/notes", {
     params: { categoryId },

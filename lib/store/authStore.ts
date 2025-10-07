@@ -12,7 +12,9 @@ type UserDraftStore = {
   clearIsAuthenticated: () => void;
 };
 const initialUser = {
-  user: { id: "", name: "", email: "", avatar: "" },
+  userName: "",
+  email: "",
+  avatar: "",
   accessToken: "",
   refreshToken: "",
   isAuthenticated: false,

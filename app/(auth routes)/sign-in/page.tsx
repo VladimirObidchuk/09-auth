@@ -4,19 +4,28 @@ import React, { useState } from "react";
 import css from "./SignInPage.module.css";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/clientApi";
-import { UserLogin } from "@/types/user";
 import { ApiError } from "@/app/api/api";
+import { useUserStore } from "@/lib/store/authStore";
 
 export default function SignIn() {
   const router = useRouter();
   const [error, setError] = useState("");
+  const { setUser } = useUserStore();
 
   const hadnleSubmit = async (formData: FormData) => {
     try {
-      const formValues = Object.fromEntries(formData) as UserLogin;
+      const formValues: UserLogin = {
+        email: formData.get("email") as string,
+        password: formData.get("password") as string,
+      };
+      if (!formValues.email || !formValues.password) {
+        setError("Email and password are required");
+        return;
+      }
       const res = await login(formValues);
 
       if (res) {
+        setUser(res);
         router.push("/profile");
       } else {
         setError("Invalid email or password");
@@ -32,7 +41,14 @@ export default function SignIn() {
 
   return (
     <main className={css.mainContent}>
-      <form className={css.form} action={hadnleSubmit}>
+      <form
+        className={css.form}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          await hadnleSubmit(formData);
+        }}
+      >
         <h1 className={css.formTitle}>Sign in</h1>
 
         <div className={css.formGroup}>
@@ -63,7 +79,7 @@ export default function SignIn() {
           </button>
         </div>
 
-        <p className={css.error}>{error}</p>
+        {error && <p className={css.error}>{error}</p>}
       </form>
     </main>
   );

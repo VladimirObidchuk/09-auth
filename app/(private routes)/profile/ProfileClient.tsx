@@ -21,7 +21,7 @@ export default function ProfileClient() {
       <div className={css.avatarWrapper}>
         <Image
           src={
-            user.user.avatar ||
+            user.avatar ||
             "https://ac.goit.global/fullstack/react/default-avatar.jpg"
           }
           alt="User Avatar"
@@ -32,8 +32,8 @@ export default function ProfileClient() {
       </div>
 
       <div className={css.profileInfo}>
-        <p>Username: {user.user.name || "Anonymous"}</p>
-        <p>Email: {user.user.email}</p>
+        <p>Username: {user.userName}</p>
+        <p>Email: {user.email}</p>
       </div>
     </div>
   );

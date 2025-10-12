@@ -7,6 +7,11 @@ import { login } from "@/lib/clientApi";
 import { ApiError } from "@/app/api/api";
 import { useUserStore } from "@/lib/store/authStore";
 
+type UserLogin = {
+  email: string;
+  password: string;
+};
+
 export default function SignIn() {
   const router = useRouter();
   const [error, setError] = useState("");

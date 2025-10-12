@@ -2,35 +2,72 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { LoginResponse } from "@/types/user";
 
-type UserState = LoginResponse & { isAuthenticated: boolean };
+export type User = {
+  userName: string;
+  email: string;
+  avatar: string;
+};
 
-type UserDraftStore = {
-  user: UserState;
-  setUser: (user: LoginResponse) => void;
+export type AuthTokens = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type LoginResponse = {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+};
+
+type UserState = {
+  user: User | null;
+  tokens: AuthTokens | null;
+  isAuthenticated: boolean;
+  setUser: (data: LoginResponse | { user: User }) => void;
   clearIsAuthenticated: () => void;
 };
-const initialUser = {
-  userName: "",
-  email: "",
-  avatar: "",
-  accessToken: "",
-  refreshToken: "",
+
+const initialState: UserState = {
+  user: null,
+  tokens: null,
   isAuthenticated: false,
+  setUser: () => {},
+  clearIsAuthenticated: () => {},
 };
 
-export const useUserStore = create<UserDraftStore>()(
+export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
-      user: initialUser,
-      setUser: (user) =>
-        set(() => ({ user: { ...user, isAuthenticated: true } })),
-      clearIsAuthenticated: () => set(() => ({ user: initialUser })),
+      ...initialState,
+
+      setUser: (data) => {
+        if ("accessToken" in data && "refreshToken" in data) {
+          set({
+            user: data.user,
+            tokens: {
+              accessToken: data.accessToken,
+              refreshToken: data.refreshToken,
+            },
+            isAuthenticated: true,
+          });
+        } else {
+          set({
+            user: data.user,
+            isAuthenticated: true,
+          });
+        }
+      },
+
+      clearIsAuthenticated: () => set({ ...initialState }),
     }),
     {
       name: "auth-user",
-      partialize: (state) => ({ user: state.user }),
+      partialize: (state) => ({
+        user: state.user,
+        tokens: state.tokens,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );

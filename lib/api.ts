@@ -1,8 +1,14 @@
 import axios from "axios";
 
-export const nextServer = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+const baseURL =
+  process.env.NEXT_PUBLIC_API_URL || "https://notehub-api.goit.study";
+
+export const api = axios.create({
+  baseURL,
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export type GetNotesParams = {

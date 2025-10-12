@@ -9,6 +9,17 @@ import { useUserStore } from "@/lib/store/authStore";
 export default function ProfileClient() {
   const { user } = useUserStore();
 
+  if (!user) {
+    return (
+      <div className={css.profileCard}>
+        <h1 className={css.formTitle}>No user data available</h1>
+        <Link href="/sign-in" className={css.editProfileButton}>
+          Go to login
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className={css.profileCard}>
       <div className={css.header}>

@@ -5,11 +5,10 @@ import css from "./AuthNavigation.module.css";
 import { useUserStore } from "@/lib/store/authStore";
 
 const AuthNavigation = () => {
-  const { user } = useUserStore();
-  const isAuth = user.isAuthenticated;
+  const { user, isAuthenticated } = useUserStore();
   return (
     <>
-      {isAuth ? (
+      {isAuthenticated && user ? (
         <>
           <li className={css.navigationItem}>
             <Link

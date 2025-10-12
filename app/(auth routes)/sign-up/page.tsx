@@ -3,28 +3,35 @@
 import React, { useState } from "react";
 import css from "./SignUpPage.module.css";
 import { useRouter } from "next/navigation";
-import { UserLogin } from "@/types/user";
 import { register } from "@/lib/clientApi";
+import { useUserStore } from "@/lib/store/authStore";
 import { ApiError } from "@/app/api/api";
 
-const SingUp = () => {
+const SignUp = () => {
   const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
   const [error, setError] = useState("");
 
-  const hadnleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     try {
-      const formValues = Object.fromEntries(formData) as UserLogin;
-      const res = await register(formValues);
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      if (!email || !password) {
+        setError("Email and password are required");
+        return;
+      }
+
+      const res = await register({ email, password });
 
       if (res) {
+        setUser(res); // Зберігаємо user + токени
         router.push("/profile");
-      } else {
-        setError("Invalid email or password");
       }
-    } catch (error) {
+    } catch (err) {
       setError(
-        (error as ApiError).response?.data?.error ??
-          (error as ApiError).message ??
+        (err as ApiError).response?.data?.error ??
+          (err as ApiError).message ??
           "Oops... some error"
       );
     }
@@ -33,16 +40,17 @@ const SingUp = () => {
   return (
     <main className={css.mainContent}>
       <h1 className={css.formTitle}>Sign up</h1>
-      <form className={css.form} action={hadnleSubmit}>
+      <form
+        className={css.form}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          await handleSubmit(formData);
+        }}
+      >
         <div className={css.formGroup}>
           <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            className={css.input}
-            required
-          />
+          <input id="email" type="email" name="email" className={css.input} />
         </div>
 
         <div className={css.formGroup}>
@@ -52,7 +60,6 @@ const SingUp = () => {
             type="password"
             name="password"
             className={css.input}
-            required
           />
         </div>
 
@@ -62,10 +69,10 @@ const SingUp = () => {
           </button>
         </div>
 
-        <p className={css.error}>Error</p>
+        {error && <p className={css.error}>{error}</p>}
       </form>
     </main>
   );
 };
 
-export default SingUp;
+export default SignUp;

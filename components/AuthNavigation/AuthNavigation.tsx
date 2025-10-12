@@ -3,9 +3,25 @@
 import Link from "next/link";
 import css from "./AuthNavigation.module.css";
 import { useUserStore } from "@/lib/store/authStore";
+import { logout } from "@/lib/clientApi";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 const AuthNavigation = () => {
-  const { user, isAuthenticated } = useUserStore();
+  const router = useRouter();
+  const { user, isAuthenticated, clearIsAuthenticated } = useUserStore();
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // 1. Логаут на сервері
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      clearIsAuthenticated(); // 2. Очищення Zustand + localStorage
+      router.push("/"); // 3. Редірект на головну
+    }
+  };
+
   return (
     <>
       {isAuthenticated && user ? (
@@ -21,12 +37,17 @@ const AuthNavigation = () => {
           </li>
           <li className={css.navigationItem}>
             <p className={css.userEmail}>{user.email}</p>
-            <button className={css.logoutButton}>Logout</button>
+            <button
+              onClick={handleLogout}
+              className={css.logoutButton}
+              type="button"
+            >
+              Logout
+            </button>
           </li>
         </>
       ) : (
         <>
-          {" "}
           <li className={css.navigationItem}>
             <Link
               href="/sign-in"

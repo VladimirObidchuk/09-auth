@@ -4,41 +4,34 @@ import React, { useState } from "react";
 import css from "./SignInPage.module.css";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/clientApi";
-import { ApiError } from "@/app/api/api";
 import { useUserStore } from "@/lib/store/authStore";
-
-type UserLogin = {
-  email: string;
-  password: string;
-};
+import { ApiError } from "@/app/api/api";
 
 export default function SignIn() {
   const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
   const [error, setError] = useState("");
-  const { setUser } = useUserStore();
 
-  const hadnleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     try {
-      const formValues: UserLogin = {
-        email: formData.get("email") as string,
-        password: formData.get("password") as string,
-      };
-      if (!formValues.email || !formValues.password) {
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      if (!email || !password) {
         setError("Email and password are required");
         return;
       }
-      const res = await login(formValues);
+
+      const res = await login({ email, password });
 
       if (res) {
-        setUser(res);
+        setUser(res); // Зберігаємо user + токени
         router.push("/profile");
-      } else {
-        setError("Invalid email or password");
       }
-    } catch (error) {
+    } catch (err) {
       setError(
-        (error as ApiError).response?.data?.error ??
-          (error as ApiError).message ??
+        (err as ApiError).response?.data?.error ??
+          (err as ApiError).message ??
           "Oops... some error"
       );
     }
@@ -51,20 +44,14 @@ export default function SignIn() {
         onSubmit={async (e) => {
           e.preventDefault();
           const formData = new FormData(e.currentTarget);
-          await hadnleSubmit(formData);
+          await handleSubmit(formData);
         }}
       >
         <h1 className={css.formTitle}>Sign in</h1>
 
         <div className={css.formGroup}>
           <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            className={css.input}
-            required
-          />
+          <input id="email" type="email" name="email" className={css.input} />
         </div>
 
         <div className={css.formGroup}>
@@ -74,7 +61,6 @@ export default function SignIn() {
             type="password"
             name="password"
             className={css.input}
-            required
           />
         </div>
 

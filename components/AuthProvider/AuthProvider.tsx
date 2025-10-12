@@ -22,7 +22,6 @@ const AuthProvider = ({ children }: Props) => {
         if (isAuthenticated) {
           const user = await getMe();
           if (user) {
-            // ✅ Тепер setUser приймає саме User, а не LoginResponse
             setUser({ user });
           } else {
             clearIsAuthenticated();

@@ -28,20 +28,15 @@ type UserState = {
   clearIsAuthenticated: () => void;
 };
 
-const initialState: UserState = {
-  user: null,
-  tokens: null,
-  isAuthenticated: false,
-  setUser: () => {},
-  clearIsAuthenticated: () => {},
-};
-
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
-      ...initialState,
+      user: null,
+      tokens: null,
+      isAuthenticated: false,
 
-      setUser: (data) => {
+      // ================= LOGIN / SET USER =================
+      setUser: (data: LoginResponse | { user: User }) => {
         if ("accessToken" in data && "refreshToken" in data) {
           set({
             user: data.user,
@@ -54,15 +49,19 @@ export const useUserStore = create<UserState>()(
         } else {
           set({
             user: data.user,
+            tokens: null,
             isAuthenticated: true,
           });
         }
       },
 
-      clearIsAuthenticated: () => set({ ...initialState }),
+      // ================= LOGOUT =================
+      clearIsAuthenticated: () => {
+        set({ user: null, tokens: null, isAuthenticated: false });
+      },
     }),
     {
-      name: "auth-user",
+      name: "auth-user", // ключ у localStorage
       partialize: (state) => ({
         user: state.user,
         tokens: state.tokens,

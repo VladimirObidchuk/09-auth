@@ -7,12 +7,12 @@ import Link from "next/link";
 import { useUserStore } from "@/lib/store/authStore";
 
 export default function ProfileClient() {
-  const { user } = useUserStore();
+  const { user, isAuthenticated } = useUserStore();
 
-  if (!user) {
+  if (!isAuthenticated) {
     return (
       <div className={css.profileCard}>
-        <h1 className={css.formTitle}>No user data available</h1>
+        <h1 className={css.formTitle}>You are not logged in</h1>
         <Link href="/sign-in" className={css.editProfileButton}>
           Go to login
         </Link>
@@ -20,11 +20,15 @@ export default function ProfileClient() {
     );
   }
 
+  if (!user) {
+    return <p>Loading profile...</p>;
+  }
+
   return (
     <div className={css.profileCard}>
       <div className={css.header}>
         <h1 className={css.formTitle}>Profile Page</h1>
-        <Link href="/" className={css.editProfileButton}>
+        <Link href="/profile/edit" className={css.editProfileButton}>
           Edit Profile
         </Link>
       </div>

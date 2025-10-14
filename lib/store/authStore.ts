@@ -1,72 +1,35 @@
 "use client";
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export type User = {
-  username: string;
-  email: string;
-  avatar: string;
-};
-
-export type AuthTokens = {
-  accessToken: string;
-  refreshToken: string;
-};
-
-export type LoginResponse = {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-};
+import { User } from "@/types/user";
 
 type UserState = {
   user: User | null;
-  tokens: AuthTokens | null;
   isAuthenticated: boolean;
-  setUser: (data: LoginResponse | { user: User }) => void;
-  clearIsAuthenticated: () => void;
+  hydrated: boolean;
+  setUser: (user: User) => void;
+  clearUser: () => void;
+  setHydrated: (value: boolean) => void;
 };
 
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       user: null,
-      tokens: null,
       isAuthenticated: false,
-
-      // ================= LOGIN / SET USER =================
-      setUser: (data: LoginResponse | { user: User }) => {
-        if ("accessToken" in data && "refreshToken" in data) {
-          set({
-            user: data.user,
-            tokens: {
-              accessToken: data.accessToken,
-              refreshToken: data.refreshToken,
-            },
-            isAuthenticated: true,
-          });
-        } else {
-          set({
-            user: data.user,
-            tokens: null,
-            isAuthenticated: true,
-          });
-        }
-      },
-
-      // ================= LOGOUT =================
-      clearIsAuthenticated: () => {
-        set({ user: null, tokens: null, isAuthenticated: false });
-      },
+      hydrated: false,
+      setUser: (user: User) => set({ user, isAuthenticated: true }),
+      clearUser: () => set({ user: null, isAuthenticated: false }),
+      setHydrated: (value: boolean) => set({ hydrated: value }),
     }),
     {
-      name: "auth-user", // ключ у localStorage
+      name: "auth-user",
       partialize: (state) => ({
         user: state.user,
-        tokens: state.tokens,
         isAuthenticated: state.isAuthenticated,
+        hydrated: state.hydrated,
       }),
+      onRehydrateStorage: () => (state) => state?.setHydrated(true),
     }
   )
 );

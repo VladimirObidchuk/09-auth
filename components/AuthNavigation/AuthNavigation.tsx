@@ -5,22 +5,30 @@ import css from "./AuthNavigation.module.css";
 import { useUserStore } from "@/lib/store/authStore";
 import { logout } from "@/lib/clientApi";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { useEffect } from "react";
 
 const AuthNavigation = () => {
   const router = useRouter();
-  const { user, isAuthenticated, clearIsAuthenticated } = useUserStore();
+  const { user, isAuthenticated, clearIsAuthenticated, hydrated, setHydrated } =
+    useUserStore();
 
   const handleLogout = async () => {
     try {
-      await logout(); // 1. Логаут на сервері
+      await logout();
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      clearIsAuthenticated(); // 2. Очищення Zustand + localStorage
-      router.push("/"); // 3. Редірект на головну
+      clearIsAuthenticated();
+      router.push("/");
     }
   };
+
+  // ✅ Встановлюємо hydrated після першого рендеру
+  useEffect(() => {
+    setHydrated(true);
+  }, [setHydrated]);
+
+  if (!hydrated) return <p className={css.loading}>Loading...</p>;
 
   return (
     <>

@@ -3,7 +3,7 @@ import css from "./EditProfilePage.module.css";
 import Image from "next/image";
 import React from "react";
 
-const page = () => {
+const ProfileEdit = () => {
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
@@ -38,4 +38,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ProfileEdit;

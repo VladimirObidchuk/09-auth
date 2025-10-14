@@ -2,10 +2,8 @@
 
 import axios from "axios";
 import { User } from "@/types/user";
-import { Note, NoteListResponse } from "@/types/note";
 
 // ================= BASE CONFIG =================
-
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "https://notehub-api.goit.study",
   withCredentials: true, // ✅ cookies автоматично передаються
@@ -15,46 +13,30 @@ export const api = axios.create({
 });
 
 // ================= AUTH TYPES =================
-
 export type UserLogin = {
   email: string;
   password: string;
 };
 
-export type UserRegister = {
-  email: string;
-  password: string;
-};
-
-export type LoginResponse = {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-};
-
 // ================= AUTH FUNCTIONS =================
 
-export async function register(data: UserRegister): Promise<LoginResponse> {
-  const { data: res } = await api.post<LoginResponse>("/auth/register", data);
-  return res;
+// 🔹 Логін (HttpOnly cookies)
+export async function login(data: UserLogin) {
+  await api.post("/auth/login", data); // cookies ставляться сервером
 }
 
-export async function login(data: UserLogin): Promise<LoginResponse> {
-  const { data: res } = await api.post<LoginResponse>("/auth/login", data);
-  return res;
-}
-
-export async function logout() {
+// 🔹 Логаут
+export async function logout(): Promise<void> {
   await api.post("/auth/logout");
 }
 
-// 🔹 Перевірка активної сесії (cookies)
-export async function checkSession(): Promise<boolean> {
+// 🔹 Перевірка активної сесії
+export async function checkSession(): Promise<User | null> {
   try {
     const { data } = await api.get<User | null>("/auth/session");
-    return !!data;
+    return data;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -68,25 +50,20 @@ export async function getMe(): Promise<User | null> {
   }
 }
 
-// 🔹 Оновити дані користувача
-export async function updateMe(updateData: Partial<User>): Promise<User> {
-  const { data } = await api.patch<User>("/users/me", updateData);
-  return data;
-}
-
 // ================= NOTES =================
-
-export async function fetchNotes(params?: {
+export type NoteParams = {
   search?: string;
   page?: number;
   tag?: string;
-}) {
-  const { data } = await api.get<NoteListResponse>("/notes", { params });
+};
+
+export async function fetchNotes(params?: NoteParams) {
+  const { data } = await api.get("/notes", { params });
   return data;
 }
 
 export async function fetchNoteById(noteId: string) {
-  const { data } = await api.get<Note>(`/notes/${noteId}`);
+  const { data } = await api.get(`/notes/${noteId}`);
   return data;
 }
 
@@ -95,11 +72,11 @@ export async function createNote(note: {
   content: string;
   tag: string;
 }) {
-  const { data } = await api.post<Note>("/notes", note);
+  const { data } = await api.post("/notes", note);
   return data;
 }
 
 export async function deleteNote(noteId: string) {
-  const { data } = await api.delete<Note>(`/notes/${noteId}`);
+  const { data } = await api.delete(`/notes/${noteId}`);
   return data;
 }

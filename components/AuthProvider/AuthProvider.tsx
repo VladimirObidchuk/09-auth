@@ -32,10 +32,12 @@ const AuthProvider = ({ children }: Props) => {
       } catch (error) {
         console.error("AuthProvider error:", error);
         clearIsAuthenticated();
+      } finally {
       }
     };
 
-    fetchUser();
+    // 🔹 Викликаємо лише на клієнті
+    if (typeof window !== "undefined") fetchUser();
   }, [setUser, clearIsAuthenticated]);
 
   return <>{children}</>;

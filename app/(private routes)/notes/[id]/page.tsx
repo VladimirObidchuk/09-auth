@@ -1,5 +1,6 @@
 import NoteModal from "@/app/@modal/(.)notes/[id]/page";
-import { fetchNoteById } from "@/lib/api";
+import { fetchNoteById } from "@/lib/clientApi";
+
 import { Metadata } from "next";
 
 type Props = {
@@ -7,8 +8,9 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const note = await fetchNoteById({ noteId: id });
+  const { id } = params; // ⚡ просто деструктуруємо
+  const note = await fetchNoteById(id); // ⚡ передаємо рядок, а не об’єкт
+
   return {
     title: `Note ${note.title}`,
     description: note.content.slice(0, 30),

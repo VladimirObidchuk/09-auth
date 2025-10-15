@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useNoteDraftStore } from "@/lib/store/noteStore";
 import { NoteDraft, NoteTag } from "@/types/note";
-import { createNote } from "@/lib/clientApi";
+import { createNote } from "@/lib/api/clientApi";
 
 type Props = {
   onSuccess?: () => void;

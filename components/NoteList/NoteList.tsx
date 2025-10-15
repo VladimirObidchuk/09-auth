@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Note } from "@/types/note";
 import Link from "next/link";
 import Button from "../Button/Button";
-import { deleteNote } from "@/lib/clientApi";
+import { deleteNote } from "@/lib/api/clientApi";
 
 type Props = {
   notes: Note[];

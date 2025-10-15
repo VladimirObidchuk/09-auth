@@ -3,7 +3,7 @@
 import css from "./SignInPage.module.css";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { login, getMe } from "@/lib/clientApi";
+import { login, getMe } from "@/lib/api/clientApi";
 import { useUserStore } from "@/lib/store/authStore";
 
 export default function SignInPage() {

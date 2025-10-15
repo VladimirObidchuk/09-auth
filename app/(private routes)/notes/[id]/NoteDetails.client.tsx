@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import Loading from "@/app/loading";
 import Error from "./error";
 import NotePreview from "@/components/NotePreview/NotePreview";
-import { fetchNoteById } from "@/lib/clientApi";
+import { fetchNoteById } from "@/lib/api/clientApi";
 import { Note } from "@/types/note";
 
 type Props = {

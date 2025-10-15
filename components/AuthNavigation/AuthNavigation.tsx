@@ -3,7 +3,7 @@
 import Link from "next/link";
 import css from "./AuthNavigation.module.css";
 import { useUserStore } from "@/lib/store/authStore";
-import { logout } from "@/lib/clientApi";
+import { logout } from "@/lib/api/clientApi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

@@ -1,5 +1,5 @@
 import NoteModal from "@/app/@modal/(.)notes/[id]/page";
-import { fetchNoteById } from "@/lib/clientApi";
+import { fetchNoteById } from "@/lib/api/clientApi";
 
 import { Metadata } from "next";
 

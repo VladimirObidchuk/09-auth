@@ -8,7 +8,7 @@ import NoteList from "@/components/NoteList/NoteList";
 import Loading from "@/app/loading";
 import Error from "./error";
 
-import { fetchNotes, NoteParams } from "@/lib/clientApi";
+import { fetchNotes, NoteParams } from "@/lib/api/clientApi";
 import { NoteListResponse } from "@/types/note";
 
 type NotesProps = {

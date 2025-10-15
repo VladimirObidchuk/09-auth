@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import css from "./NoteForm.module.css";
 import Button from "../Button/Button";
 import { useQueryClient } from "@tanstack/react-query";
-import { createNote } from "@/lib/api";
+
 import { useRouter } from "next/navigation";
 import { useNoteDraftStore } from "@/lib/store/noteStore";
 import { NoteDraft, NoteTag } from "@/types/note";
+import { createNote } from "@/lib/clientApi";
 
 type Props = {
   onSuccess?: () => void;

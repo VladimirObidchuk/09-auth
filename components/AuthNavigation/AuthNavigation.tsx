@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 const AuthNavigation = () => {
   const router = useRouter();
-  const { user, isAuthenticated, clearIsAuthenticated, hydrated, setHydrated } =
+  const { user, isAuthenticated, clearUser, hydrated, setHydrated } =
     useUserStore();
 
   const handleLogout = async () => {
@@ -18,7 +18,7 @@ const AuthNavigation = () => {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      clearIsAuthenticated();
+      clearUser();
       router.push("/");
     }
   };

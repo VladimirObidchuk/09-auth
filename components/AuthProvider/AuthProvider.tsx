@@ -10,9 +10,7 @@ type Props = {
 
 const AuthProvider = ({ children }: Props) => {
   const setUser = useUserStore((state) => state.setUser);
-  const clearIsAuthenticated = useUserStore(
-    (state) => state.clearIsAuthenticated
-  );
+  const clearUser = useUserStore((state) => state.clearUser);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -22,23 +20,23 @@ const AuthProvider = ({ children }: Props) => {
         if (isAuthenticated) {
           const user = await getMe();
           if (user) {
-            setUser({ user });
+            setUser(user);
           } else {
-            clearIsAuthenticated();
+            clearUser();
           }
         } else {
-          clearIsAuthenticated();
+          clearUser();
         }
       } catch (error) {
         console.error("AuthProvider error:", error);
-        clearIsAuthenticated();
+        clearUser();
       } finally {
       }
     };
 
     // 🔹 Викликаємо лише на клієнті
     if (typeof window !== "undefined") fetchUser();
-  }, [setUser, clearIsAuthenticated]);
+  }, [setUser, clearUser]);
 
   return <>{children}</>;
 };

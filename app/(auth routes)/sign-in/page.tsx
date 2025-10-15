@@ -108,18 +108,17 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Автоматичний редірект, якщо користувач вже авторизований
   useEffect(() => {
     if (user && hydrated) {
       router.push("/profile");
     }
   }, [user, hydrated, router]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (formData: FormData) => {
     setLoading(true);
     setError("");
 
-    const formData = new FormData(e.currentTarget);
+    // const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 

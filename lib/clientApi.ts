@@ -16,6 +16,10 @@ export type UserLogin = {
   password: string;
 };
 
+export async function register(data: UserLogin) {
+  const { data: user } = await api.post("/auth/register", data); // або ваш endpoint для реєстрації
+  return user;
+}
 // ================= AUTH FUNCTIONS =================
 
 // 🔹 Логін (HttpOnly cookies)

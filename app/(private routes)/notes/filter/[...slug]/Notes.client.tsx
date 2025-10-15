@@ -1,49 +1,63 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import NotesPage from "@/components/NotesPage/NotesPage";
 import NoteList from "@/components/NoteList/NoteList";
-import { getNotes, GetNotesParams } from "@/lib/api";
-import { NoteListResponse } from "@/types/note";
-import Error from "./error";
 import Loading from "@/app/loading";
+import Error from "./error";
 
-type NoteProps = {
-  tag?: GetNotesParams["tag"];
+import { fetchNotes, NoteParams } from "@/lib/clientApi";
+import { NoteListResponse } from "@/types/note";
+
+type NotesProps = {
+  tag?: string;
 };
 
-const Notes = ({ tag }: NoteProps) => {
+const Notes = ({ tag }: NotesProps) => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const { data, isLoading, isError, error } = useQuery<NoteListResponse>({
-    queryKey: ["notes", { page, search }],
-    queryFn: () =>
-      getNotes({
-        page,
-        perPage: 10,
-        search,
-        sortBy: "created",
-        ...(tag ? { tag } : {}),
-      }),
-    placeholderData: keepPreviousData,
+  const params: NoteParams = {
+    page,
+    perPage: 10,
+    search,
+    ...(tag ? { tag } : {}),
+  };
+
+  const { data, isLoading, isError, error, isFetching } = useQuery<
+    NoteListResponse,
+    Error
+  >({
+    queryKey: ["notes", params],
+    queryFn: () => fetchNotes(params),
   });
+
   if (isLoading) return <Loading />;
-  if (isError) return <Error error={error} value="the list of notes" />;
-  if (!data) return <p>No note found</p>;
+
+  if (isError || !data) {
+    // Використовуємо ?. і fallback, щоб TS не скаржився
+    return (
+      <Error
+        error={error?.message ?? "Unknown error"}
+        value="the list of notes"
+      />
+    );
+  }
+
+  if (data.notes.length === 0) return <p>No notes found.</p>;
 
   return (
-    <>
-      <NotesPage data={data} setPage={setPage} setSearch={setSearch}>
-        {data?.notes?.length ? (
-          <NoteList notes={data.notes} />
-        ) : (
-          <p>No notes found.</p>
-        )}
-      </NotesPage>
-    </>
+    <NotesPage
+      data={data}
+      setPage={setPage}
+      setSearch={setSearch}
+      currentPage={page}
+      isFetching={isFetching}
+    >
+      <NoteList notes={data.notes} />
+    </NotesPage>
   );
 };
 

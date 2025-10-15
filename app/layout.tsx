@@ -9,7 +9,6 @@ import AuthProvider from "@/components/AuthProvider/AuthProvider";
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["400", "700"],
-  variable: "--font-roboto",
   display: "swap",
 });
 
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Note Hub",
     description: "App for create/modify/delete notes",
-    siteName: "",
+    siteName: "Note Hub",
     images: [
       {
         url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
@@ -35,13 +34,13 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
   modal,
-}: Readonly<{
+}: {
   children: React.ReactNode;
   modal: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${roboto.variable}`}>
+      <body className={roboto.className}>
         <TanStackProvider>
           <AuthProvider>
             <Header />

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { User } from "@/types/user";
+import { NoteListResponse } from "@/types/note";
 
 // ================= BASE CONFIG =================
 export const api = axios.create({
@@ -53,14 +54,18 @@ export async function getMe(): Promise<User | null> {
 }
 
 // ================= NOTES =================
+
 export type NoteParams = {
   search?: string;
   page?: number;
+  perPage?: number;
   tag?: string;
 };
 
-export async function fetchNotes(params?: NoteParams) {
-  const { data } = await api.get("/notes", { params });
+export async function fetchNotes(
+  params?: NoteParams
+): Promise<NoteListResponse> {
+  const { data } = await api.get<NoteListResponse>("/notes", { params });
   return data;
 }
 

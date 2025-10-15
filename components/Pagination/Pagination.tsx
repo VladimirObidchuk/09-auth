@@ -5,6 +5,7 @@ import Button from "../Button/Button";
 
 type Props = {
   totalPages: number;
+  currentPage: number;
   onPageChange: (page: number) => void;
 };
 

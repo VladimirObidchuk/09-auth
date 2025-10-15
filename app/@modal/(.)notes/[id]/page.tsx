@@ -1,4 +1,4 @@
-import { fetchNoteById } from "@/lib/api";
+import { fetchNoteById } from "@/lib/clientApi";
 import NotePreviewDetails from "./NotePreview.client";
 
 type Props = {
@@ -6,7 +6,8 @@ type Props = {
 };
 
 export default async function NoteModal({ params }: Props) {
-  const data = await fetchNoteById({ noteId: params.id });
+  // ⚡ Передаємо тільки рядок, як очікує fetchNoteById
+  const data = await fetchNoteById(params.id);
 
   return <NotePreviewDetails data={data} />;
 }
